@@ -10,8 +10,13 @@ export class UsersService {
     private readonly users: Repository<User>,
   ) {}
 
-  createAccount(): string {
-    console.log('Hello World!');
+  createAccount(createUserBody: any): string {
+    console.log(createUserBody);
+    return 'test';
+  }
+
+  findOneAccount(userId: string): string {
+    console.log(userId);
     return 'test';
   }
 }
