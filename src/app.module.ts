@@ -7,6 +7,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { User } from './users/entity/user.entity';
 import { Purchase } from './orders/entities/orders.entity';
+import { ItemsModule } from './items/items.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { Purchase } from './orders/entities/orders.entity';
     }),
     UsersModule,
     OrdersModule,
+    ItemsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
