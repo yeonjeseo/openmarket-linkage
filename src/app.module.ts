@@ -2,13 +2,11 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
-import { PurchasesModule } from './purchases/purchases.module';
-import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
+import { OrdersModule } from './orders/orders.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { User } from './users/entity/user.entity';
-import { Purchase } from './purchases/entities/purchase.entity';
-import { UsersController } from './users/users.controller';
-import { UsersService } from './users/users.service';
+import { Purchase } from './orders/entities/orders.entity';
 
 @Module({
   imports: [
@@ -29,7 +27,7 @@ import { UsersService } from './users/users.service';
         process.env.NODE_ENV !== 'prod' && process.env.NODE_ENV !== 'test',
     }),
     UsersModule,
-    PurchasesModule,
+    OrdersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
