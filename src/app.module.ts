@@ -6,8 +6,9 @@ import { OrdersModule } from './orders/orders.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { User } from './users/entity/user.entity';
-import { Purchase } from './orders/entities/orders.entity';
 import { ItemsModule } from './items/items.module';
+import { Order } from './orders/entities/orders.entity';
+import { Item } from './items/entities/items.entity';
 
 @Module({
   imports: [
@@ -22,7 +23,7 @@ import { ItemsModule } from './items/items.module';
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_DATABASE,
-      entities: [User, Purchase],
+      entities: [User, Order, Item],
       synchronize: process.env.NODE_ENV !== 'prod', // DB를 현재 모듈 상태로 동기화
       logging:
         process.env.NODE_ENV !== 'prod' && process.env.NODE_ENV !== 'test',

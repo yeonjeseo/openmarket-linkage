@@ -1,8 +1,8 @@
 import { CoreEntity } from '../../common/entities/core.entity';
 import { Column, Entity } from 'typeorm';
 
-@Entity('ITEMS')
-export class Purchase extends CoreEntity {
+@Entity('ORDERS')
+export class Order extends CoreEntity {
   @Column()
   ordererTel: string;
 
