@@ -11,6 +11,7 @@ import { Order } from './orders/entities/orders.entity';
 import { Item } from './items/entities/items.entity';
 import { ScheduleModule } from '@nestjs/schedule';
 import { CronModule } from './cron/cron.module';
+import { BcryptService } from './utils/bcrypt';
 
 @Module({
   imports: [
@@ -28,8 +29,8 @@ import { CronModule } from './cron/cron.module';
       database: process.env.DB_DATABASE,
       entities: [User, Order, Item],
       synchronize: process.env.NODE_ENV !== 'prod', // DB를 현재 모듈 상태로 동기화
-      logging:
-        process.env.NODE_ENV !== 'prod' && process.env.NODE_ENV !== 'test',
+      // logging:
+      //   process.env.NODE_ENV !== 'prod' && process.env.NODE_ENV !== 'test',
     }),
     UsersModule,
     OrdersModule,
