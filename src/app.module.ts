@@ -9,9 +9,12 @@ import { User } from './users/entity/user.entity';
 import { ItemsModule } from './items/items.module';
 import { Order } from './orders/entities/orders.entity';
 import { Item } from './items/entities/items.entity';
+import { ScheduleModule } from '@nestjs/schedule';
+import { CronModule } from './cron/cron.module';
 
 @Module({
   imports: [
+    ScheduleModule.forRoot(),
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: '.env',
@@ -31,6 +34,7 @@ import { Item } from './items/entities/items.entity';
     UsersModule,
     OrdersModule,
     ItemsModule,
+    CronModule,
   ],
   controllers: [AppController],
   providers: [AppService],
