@@ -27,6 +27,6 @@ export class Order extends CoreEntity {
   @Column()
   isDeliveryMemoParticularInput: boolean;
 
-  @Column()
+  @Column({ nullable: true })
   deliveryMemo: string;
 }
