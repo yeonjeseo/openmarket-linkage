@@ -16,7 +16,7 @@ export class Item extends CoreEntity {
   productOrderStatus: string;
 
   @Column()
-  productOrderName: string;
+  productName: string;
 
   @Column()
   placeOrderStatus: string;
@@ -30,8 +30,8 @@ export class Item extends CoreEntity {
   @Column()
   shippingDueDate: Date;
 
-  @Column()
-  shippingAddress: string;
+  // @Column()
+  // shippingAddress: string;
 
   @Column()
   sellerProductCode: string;

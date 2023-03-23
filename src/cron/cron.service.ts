@@ -7,6 +7,7 @@ import { startOfToday } from '../utils/luxon';
 import { Repository } from 'typeorm';
 import { Order } from '../orders/entities/orders.entity';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Item } from '../items/entities/items.entity';
 
 @Injectable()
 export class CronService {
@@ -15,6 +16,8 @@ export class CronService {
     private readonly bcryptService: BcryptService,
     @InjectRepository(Order)
     private readonly ordersRepository: Repository<Order>,
+    @InjectRepository(Item)
+    private readonly itemsRepository: Repository<Item>,
   ) {}
   @Cron('*/10 * * * * *')
   /**
@@ -97,24 +100,43 @@ export class CronService {
         orderIds.push(orderInfo.order.orderId),
       );
 
-      const foundOrders = await this.ordersRepository
-        .createQueryBuilder('orders')
-        .where('orderId IN (:orderIds)', { orderIds })
-        .getMany();
+      const [foundOrders, foundItems] = await Promise.all([
+        this.ordersRepository
+          .createQueryBuilder('orders')
+          .where('orderId IN (:orderIds)', { orderIds })
+          .getMany(),
+        this.itemsRepository
+          .createQueryBuilder('items')
+          .where('productOrderId IN (:productOrderIds)', { productOrderIds })
+          .getMany(),
+      ]);
+
+      const foundProductOrderIds = foundItems.map(
+        (item) => item.productOrderId,
+      );
+      const newProductOrderIds = productOrderIds.filter(
+        (productOrderId) => !foundProductOrderIds.includes(productOrderId),
+      );
 
       const foundOrderIds = foundOrders.map((order) => order.orderId);
       const newOrderIds = orderIds.filter(
         (orderId) => !foundOrderIds.includes(orderId),
       );
 
-      const createPromises = orderDetails.data.data.map((orderInfo) => {
+      const createOrderPromises = orderDetails.data.data.map((orderInfo) => {
         if (newOrderIds.includes(orderInfo.order.orderId))
           return this.ordersRepository.save(
             this.ordersRepository.create({ ...orderInfo.order }),
           );
       });
+      const createItemPromises = orderDetails.data.data.map((orderInfo) => {
+        if (newProductOrderIds.includes(orderInfo.productOrder.productOrderId))
+          return this.itemsRepository.save(
+            this.itemsRepository.create({ ...orderInfo.productOrder }),
+          );
+      });
 
-      await Promise.all(createPromises);
+      await Promise.all([...createOrderPromises, ...createItemPromises]);
     } catch (e) {
       console.log(e);
     }
