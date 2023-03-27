@@ -30,12 +30,27 @@ export class Item extends CoreEntity {
   @Column()
   shippingDueDate: Date;
 
-  // @Column()
-  // shippingAddress: string;
-
   @Column()
   sellerProductCode: string;
 
   @Column()
   expectedSettlementAmount: number;
+
+  @Column()
+  baseAddress: string;
+
+  @Column()
+  detailedAddress: string;
+
+  @Column()
+  zipCode: string;
+
+  @Column({ nullable: true })
+  tel1: string;
+
+  @Column({ nullable: true })
+  tel2: string;
+
+  @Column()
+  name: string;
 }

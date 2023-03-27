@@ -132,7 +132,16 @@ export class CronService {
       const createItemPromises = orderDetails.data.data.map((orderInfo) => {
         if (newProductOrderIds.includes(orderInfo.productOrder.productOrderId))
           return this.itemsRepository.save(
-            this.itemsRepository.create({ ...orderInfo.productOrder }),
+            this.itemsRepository.create({
+              ...orderInfo.productOrder,
+              baseAddress: orderInfo.productOrder.shippingAddress.baseAddress,
+              detailedAddress:
+                orderInfo.productOrder.shippingAddress.detailedAddress,
+              zipCode: orderInfo.productOrder.shippingAddress.zipCode,
+              tel1: orderInfo.productOrder.shippingAddress.tel1,
+              tel2: orderInfo.productOrder.shippingAddress.tel2,
+              name: orderInfo.productOrder.shippingAddress.name,
+            }),
           );
       });
 
