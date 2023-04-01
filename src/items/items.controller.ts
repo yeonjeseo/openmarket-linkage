@@ -1,11 +1,11 @@
 import { Controller, Get, Param } from '@nestjs/common';
 import { ItemsService } from './items.service';
 
-@Controller()
+@Controller('items')
 export class ItemsController {
   constructor(private readonly itemsService: ItemsService) {}
 
-  @Get('/items/:storeId')
+  @Get('/:storeId')
   async getAllItemsByStore(@Param() { storeId }: any) {
     return this.itemsService.getAllItemsByStore(storeId);
   }
