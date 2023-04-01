@@ -7,7 +7,7 @@ import { startOfToday } from '../utils/luxon';
 import { Repository } from 'typeorm';
 import { Order } from '../orders/entities/orders.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Item } from '../items/entities/items.entity';
+import { Item } from '../orders/entities/items.entity';
 
 @Injectable()
 export class CronService {

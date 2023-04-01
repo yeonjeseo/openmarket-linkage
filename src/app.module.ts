@@ -6,12 +6,10 @@ import { OrdersModule } from './orders/orders.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { User } from './users/entity/user.entity';
-import { ItemsModule } from './items/items.module';
 import { Order } from './orders/entities/orders.entity';
-import { Item } from './items/entities/items.entity';
+import { Item } from './orders/entities/items.entity';
 import { ScheduleModule } from '@nestjs/schedule';
 import { CronModule } from './cron/cron.module';
-import { BcryptService } from './utils/bcrypt';
 
 @Module({
   imports: [
@@ -34,7 +32,6 @@ import { BcryptService } from './utils/bcrypt';
     }),
     UsersModule,
     OrdersModule,
-    ItemsModule,
     CronModule,
   ],
   controllers: [AppController],

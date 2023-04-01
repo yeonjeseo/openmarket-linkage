@@ -4,7 +4,7 @@ import { HttpModule } from '@nestjs/axios';
 import { BcryptService } from '../utils/bcrypt';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Order } from '../orders/entities/orders.entity';
-import { Item } from '../items/entities/items.entity';
+import { Item } from '../orders/entities/items.entity';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Order, Item]), HttpModule],

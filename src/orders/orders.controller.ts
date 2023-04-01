@@ -7,6 +7,6 @@ export class OrdersController {
 
   @Get()
   getAllOrders() {
-    return 'return all orders';
+    return this.ordersService.getAllOrderItems();
   }
 }
