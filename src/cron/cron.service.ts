@@ -3,7 +3,7 @@ import { Cron } from '@nestjs/schedule';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
 import { BcryptService } from '../utils/bcrypt';
-import { startOfToday } from '../utils/luxon';
+import { endOfToday, startOfToday } from '../utils/luxon';
 import { Repository } from 'typeorm';
 import { Order } from '../orders/entities/orders.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -58,7 +58,7 @@ export class CronService {
         this.httpService.get(
           `${
             process.env.NAVER_PRODUCT_ORDERS_URI
-          }?lastChangedFrom=${startOfToday()}`,
+          }?lastChangedFrom=${startOfToday()}&lastChangedTo=${endOfToday()}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -96,9 +96,9 @@ export class CronService {
        */
 
       const orderIds = [];
-      orderDetails.data.data.forEach((orderInfo) =>
-        orderIds.push(orderInfo.order.orderId),
-      );
+      orderDetails.data.data.forEach((orderInfo) => {
+        orderIds.push(orderInfo.order.orderId);
+      });
 
       const [foundOrders, foundItems] = await Promise.all([
         this.ordersRepository

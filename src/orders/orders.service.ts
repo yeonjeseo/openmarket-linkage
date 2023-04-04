@@ -12,4 +12,6 @@ export class OrdersService {
   ) {}
 
   getAllOrderItems = () => this.items.find({});
+
+  patchProductOrder;
 }
