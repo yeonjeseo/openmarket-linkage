@@ -1,5 +1,6 @@
 import { CoreEntity } from '../../common/entities/core.entity';
-import { Column, Entity } from 'typeorm';
+import { Column, Entity, Index, JoinColumn, OneToMany } from 'typeorm';
+import { Item } from './items.entity';
 
 @Entity('ORDERS')
 export class Order extends CoreEntity {
@@ -13,6 +14,7 @@ export class Order extends CoreEntity {
   payLocationType: string;
 
   @Column()
+  @Index('ORDERS_orderId_unique_constraint', { unique: true })
   orderId: string;
 
   @Column()

@@ -11,7 +11,9 @@ export class OrdersService {
     private readonly items: Repository<Item>,
   ) {}
 
-  getAllOrderItems = () => this.items.find({});
-
-  patchProductOrder;
+  getAllOrderItems = () =>
+    this.items
+      .createQueryBuilder('item')
+      .leftJoinAndSelect(Order, 'order', 'order.orderId=item.orderId')
+      .getMany();
 }

@@ -1,8 +1,25 @@
 import { CoreEntity } from '../../common/entities/core.entity';
-import { Column, Entity } from 'typeorm';
+import {
+  Column,
+  Entity,
+  Index,
+  JoinColumn,
+  ManyToOne,
+  OneToOne,
+} from 'typeorm';
+import { Order } from './orders.entity';
 
 @Entity('ITEMS')
 export class Item extends CoreEntity {
+  @Column()
+  @Index('ITEMS_orderId_index')
+  @ManyToOne(() => Order, { onDelete: 'CASCADE', onUpdate: 'CASCADE' })
+  @JoinColumn({
+    name: 'orderId',
+    referencedColumnName: 'orderId',
+  })
+  orderId: string;
+
   @Column()
   mallId: string;
 

@@ -141,6 +141,7 @@ export class CronService {
               tel1: orderInfo.productOrder.shippingAddress.tel1,
               tel2: orderInfo.productOrder.shippingAddress.tel2,
               name: orderInfo.productOrder.shippingAddress.name,
+              orderId: orderInfo.order.orderId,
             }),
           );
       });

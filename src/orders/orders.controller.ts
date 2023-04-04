@@ -7,7 +7,6 @@ export class OrdersController {
 
   @Get()
   getAllOrders() {
-    console.log('랜딩 페이지');
     return this.ordersService.getAllOrderItems();
   }
 
