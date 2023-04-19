@@ -3,7 +3,7 @@ import { Cron } from '@nestjs/schedule';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
 import { BcryptService } from '../utils/bcrypt';
-import { endOfToday, startOfToday } from '../utils/luxon';
+import { endOfToday, startOfToday, someDay } from '../utils/luxon';
 import { Repository } from 'typeorm';
 import { Order } from '../orders/entities/orders.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -58,7 +58,7 @@ export class CronService {
         this.httpService.get(
           `${
             process.env.NAVER_PRODUCT_ORDERS_URI
-          }?lastChangedFrom=${startOfToday()}&lastChangedTo=${endOfToday()}`,
+          }?lastChangedFrom=${someDay()}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -66,7 +66,6 @@ export class CronService {
           },
         ),
       );
-
       if (!orderList.data.data) {
         console.log('주문 정보 없음');
         return;
@@ -95,6 +94,7 @@ export class CronService {
        * ORDERID 로 벌크 중복 체크, 별크 생성
        */
 
+      const orderInfos = orderDetails.data.data.map((order) => order);
       const orderIds = [];
       orderDetails.data.data.forEach((orderInfo) => {
         orderIds.push(orderInfo.order.orderId);
@@ -110,6 +110,45 @@ export class CronService {
           .where('productOrderId IN (:productOrderIds)', { productOrderIds })
           .getMany(),
       ]);
+      /**
+       * TODO
+       * API 호출 결과에서 orderId만 추출해서 DB 조회, 그 결과 -> foundOrders
+       * API 조회 결과에는 foundOrders 에 해당하는 주문이 있음
+       * 이터레이션
+       * 주문 단계에 따라서 order는 변할 수 있는데 productOrder 도 변할 수 있나??
+       */
+
+      const updateProductOrderPromises = [];
+      for await (const foundItem of foundItems) {
+        const recentProductOrder = orderInfos.find(
+          (orderInfo) => orderInfo.order.orderId === foundItem.orderId,
+        ).productOrder;
+        /**
+         * 이전 DB 저장되어있던 정보와 현재 API 호출 결과가 다르다면....
+         * 뭘로 다른걸 판단하지?
+         *
+         */
+        console.log(
+          foundItem.productOrderStatus,
+          recentProductOrder.productOrderStatus,
+        );
+        if (
+          foundItem.placeOrderStatus !== recentProductOrder.placeOrderStatus ||
+          foundItem.productOrderStatus !== recentProductOrder.productOrderStatus
+        ) {
+          updateProductOrderPromises.push(
+            this.itemsRepository.update(
+              {
+                id: foundItem.id,
+              },
+              {
+                productOrderStatus: recentProductOrder.productOrderStatus,
+                placeOrderStatus: recentProductOrder.placeOrderStatus,
+              },
+            ),
+          );
+        }
+      }
 
       const foundProductOrderIds = foundItems.map(
         (item) => item.productOrderId,
@@ -146,7 +185,11 @@ export class CronService {
           );
       });
 
-      await Promise.all([...createOrderPromises, ...createItemPromises]);
+      await Promise.all([
+        ...createOrderPromises,
+        ...createItemPromises,
+        ...updateProductOrderPromises,
+      ]);
     } catch (e) {
       console.log(e);
     }
